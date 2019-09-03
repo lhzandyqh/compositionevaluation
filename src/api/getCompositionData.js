@@ -26,3 +26,12 @@ export function getResearchListData (parems) {
     params: parems
   })
 }
+
+// 获得作文详情
+export function getContentData (parems) {
+  return request({
+    url: '/zihui/show',
+    method: 'get',
+    params: parems
+  })
+}

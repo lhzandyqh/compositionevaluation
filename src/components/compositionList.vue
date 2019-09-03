@@ -17,7 +17,7 @@
     <el-divider></el-divider>
     <el-row>
       <div v-for="item in compositionData" :key="item.id" class="text item" v-loading="loading">
-        <el-card style="width: 90%;height: 200px">
+        <el-card style="width: 90%;height: 200px" @click.native="gotoContent(item)">
           <el-row>
             <el-col :span="9">
               <div class="picture-container">
@@ -149,6 +149,22 @@ export default {
           this.loading = false
         })
       }
+    },
+    gotoContent (item) {
+      // const {href} = this.$router.resolve({
+      //   path: '/compositionContent',
+      //   query: {
+      //     id: item.essayId
+      //   }
+      // })
+      // window.open(href, '_bank')
+      this.$router.push({
+        path: '/compositionContent',
+        query: {
+          id: item.essayId
+        }
+      })
+      console.log(item)
     }
   }
 }
