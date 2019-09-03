@@ -28,7 +28,8 @@
                 </div>
                 <div class="title">
                   <span v-if="loginFlag==='否'" style="color: dimgrey;cursor: pointer" @click="showLogin">登录</span>
-                  <span v-else style="color: dimgrey">我的</span>
+<!--                  <span v-else style="color: dimgrey">我的</span>-->
+                  <user-popover v-else></user-popover>
                 </div>
               </div>
             </el-col>
@@ -80,9 +81,10 @@ import {login} from '@/api/login'
 import logo from '@/assets/image/logo.png'
 import searchSection from '@/components/searchSection'
 import compositionList from '@/components/compositionList'
+import userPopover from '@/components/user/userPopover'
 export default {
   name: 'homePage',
-  components: { searchSection, compositionList },
+  components: { searchSection, compositionList, userPopover },
   data () {
     return {
       logo: logo,
@@ -124,7 +126,7 @@ export default {
       })
     },
     goCompositionContent: function () {
-      let routeData = this.$router.resolve({ path: '//compositionContent' })
+      let routeData = this.$router.resolve({ path: '/compositionContent' })
       window.open(routeData.href, '_blank')
     }
   }

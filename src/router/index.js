@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import homePage from '@/components/homePage'
 // import loginPage from '@/components/loginPage'
 import compositionContent from '@/components/compositionContent'
+import myFavoritePage from '@/components/myFavoritePage'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/compositionContent',
       name: 'compositionContent',
       component: compositionContent
+    },
+    {
+      path: '/myfavorite',
+      name: 'myFavoritePage',
+      component: myFavoritePage
     }
     // {
     //   path: '/',
