@@ -3,14 +3,19 @@
     <el-container style="width: 100%">
       <el-header height="80px">
         <el-row>
-          <el-col :span="4" :offset="4">
+          <el-col :span="5">
+            <div class="pictureContainer">
+              <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+            </div>
+          </el-col>
+          <el-col :span="4" :offset="1">
             <div class="logo_container">
               <el-image
                 style="width: 162px; height: 42px"
                 :src=logo></el-image>
             </div>
           </el-col>
-          <el-col :span="2" :offset="12">
+          <el-col :span="2" :offset="10">
             <div class="tubiao-contianer">
               <div class="tubiao">
                 <!--                <i class="el-icon-s-data"></i>-->
@@ -47,7 +52,7 @@
                     <el-row>
                       <el-col :span="9">
                         <div class="picture-container">
-                          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" style="width: 300px;height: 160px">
+                          <img src="http://114.242.223.253/zihui/images/20190703a002.jpg" class="image" style="width: 300px;height: 160px">
                         </div>
                       </el-col>
                       <el-col :span="15">
@@ -127,7 +132,7 @@ export default {
     return {
       username: localStorage.getItem('username'),
       dialogVisible: false,
-      total: 10,
+      total: 0,
       logo: logo,
       textarea1: '',
       textarea2: '',
@@ -144,7 +149,7 @@ export default {
       }
       getFavoriteListData(prams).then(respone => {
         this.favoriteData = respone.data.data.collectList
-        this.total = this.favoriteData.length
+        this.total = respone.data.data.collectCount
         if (this.total === 0) {
           this.$message({
             message: '未查询到相关收藏',
@@ -162,7 +167,7 @@ export default {
       }
       getFavoriteListData(prams).then(respone => {
         this.favoriteData = respone.data.data.collectList
-        this.total = this.favoriteData.length
+        this.total = respone.data.data.collectCount
         if (this.total === 0) {
           this.$message({
             message: '未查询到相关收藏',
@@ -249,6 +254,9 @@ export default {
   .fenye{
     padding-top: 20px;
     text-align: center;
+  }
+  .pictureContainer{
+    padding-top: 10px;
   }
 
 </style>

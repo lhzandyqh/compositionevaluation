@@ -4,14 +4,19 @@
       <el-container style="width: 100%">
         <el-header height="80px">
           <el-row>
-            <el-col :span="4" :offset="4">
+            <el-col :span="5">
+              <div class="pictureContainer">
+                <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+              </div>
+            </el-col>
+            <el-col :span="4" :offset="1">
               <div class="logo_container">
                 <el-image
                   style="width: 162px; height: 42px"
                   :src=logo></el-image>
               </div>
             </el-col>
-            <el-col :span="2" :offset="12">
+            <el-col :span="2" :offset="10">
               <div class="tubiao-contianer">
                 <div class="tubiao">
                   <i class="el-icon-s-data"></i>
@@ -41,7 +46,7 @@
               <search-section style="padding-top: 20%"></search-section>
             </el-aside>
             <el-main >
-              <composition-list :father="username" :fatherArray="fatherData"></composition-list>
+              <composition-list :father="username" :fatherArray="fatherData" ref="child"></composition-list>
             </el-main>
           </el-container>
         </el-main>
@@ -95,7 +100,7 @@ export default {
         user_name: '',
         password: ''
       },
-      username: '',
+      username: localStorage.username,
       fatherData: []
     }
   },
@@ -130,6 +135,7 @@ export default {
         password: this.loginForm.password
       }
       login(prams).then(respone => {
+        localStorage.clear()
         localStorage.setItem('username', respone.data.data)
         this.$message({
           message: '登录成功',
@@ -139,24 +145,36 @@ export default {
         this.loginFlag = '是'
         // alert('登录成功')
         this.showDialog = false
-        this.username = localStorage.getItem('username')
+        this.username = localStorage.username
         const prams = {
           page: 1,
           user: this.username
         }
         getCompositionListData(prams).then(respone => {
-          this.compositionData = respone.data.data
-          console.log('输出父组件测试')
-          console.log(this.compositionData)
+          this.fatherData = respone.data.data
+          console.log('输出要传给子组件显示的作文数据')
+          console.log(this.fatherData)
+          this.$refs.child.handleCurrentChange(1)
         })
       })
     },
     goCompositionContent: function () {
-      let routeData = this.$router.resolve({ path: '/compositionContent' })
-      window.open(routeData.href, '_blank')
+      console.log('初次加载username')
+      console.log(this.username)
+      if (this.username === '' || this.username === undefined) {
+        this.$message({
+          message: '您未登录，无法使用智能测评功能',
+          type: 'warning'
+        })
+      } else {
+        let routeData = this.$router.resolve({ path: '/compositionContent' })
+        window.open(routeData.href, '_blank')
+      }
+      // let routeData = this.$router.resolve({ path: '/compositionContent' })
+      // window.open(routeData.href, '_blank')
     },
     judgeFlag: function () {
-      if (localStorage.getItem('username') === null) {
+      if (localStorage.username === '' || localStorage.username === undefined) {
         this.loginFlag = '否'
       } else {
         this.loginFlag = '是'
@@ -191,5 +209,8 @@ export default {
   .copyrightContainer{
     padding-top: 20px;
     text-align: center;
+  }
+  .pictureContainer{
+    padding-top: 10px;
   }
 </style>

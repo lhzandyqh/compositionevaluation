@@ -22,7 +22,7 @@
             <el-col :span="9">
               <div class="picture-container">
 <!--                // https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png-->
-                <img src="http://114.242.223.253/zihui/images/20190703a002.jpg" class="image" style="width: 300px;height: 160px">
+                <img :src=changePicture(item.essay) class="image" style="width: 300px;height: 160px">
               </div>
             </el-col>
             <el-col :span="15">
@@ -95,6 +95,7 @@ import {getCompositionListData, getResearchListData} from '@/api/getCompositionD
 import {collectComposition} from '@/api/collectOrLikeComposition'
 export default {
   name: 'compositionList',
+  inject: ['reload'],
   props: {
     father: String,
     fatherArray: Array
@@ -104,11 +105,11 @@ export default {
       compositionData: [],
       currentPage: 1,
       input3: '',
-      total: 4000,
+      total: 4437,
       researchFlag: false,
       loading: false,
       likeFlag: false,
-      username: ''
+      username: localStorage.username
       // url: this.changePicture()
     }
   },
@@ -116,16 +117,16 @@ export default {
     this.getData()
   },
   methods: {
-    // changePicture: function (item) {
-    //   var num = (item.id) % 100
-    //   if (num < 10) {
-    //     num = '0' + num
-    //   } else {
-    //     num = '' + num
-    //   }
-    //   var str = 'http://114.242.223.253/zihui/images/20190703a0' + num + '.jpg'
-    //   return str
-    // },
+    changePicture: function (item) {
+      var num = (item.id) % 100
+      if (num < 10) {
+        num = '0' + num
+      } else {
+        num = '' + num
+      }
+      var str = 'http://114.242.223.253/zihui/images/20190703a0' + num + '.jpg'
+      return str
+    },
     research: function () {
       this.researchFlag = true
       const prams = {
@@ -134,7 +135,7 @@ export default {
       }
       this.loading = true
       getResearchListData(prams).then(respone => {
-        this.compositionData = respone.data.essays
+        this.compositionData = respone.data.data.essays
         this.total = respone.data.data.count
         if (this.total === 0) {
           this.$message({
@@ -148,7 +149,8 @@ export default {
     },
     getData: function () {
       const prams = {
-        page: 1
+        page: 1,
+        user: this.username
       }
       getCompositionListData(prams).then(respone => {
         this.compositionData = respone.data.data
@@ -161,7 +163,7 @@ export default {
         console.log(`当前页: ${val}`)
         const prams = {
           page: val,
-          user: this.father
+          user: this.username
         }
         getCompositionListData(prams).then(respone => {
           this.compositionData = respone.data.data
@@ -170,7 +172,7 @@ export default {
         console.log(`当前页: ${val}`)
         const prams = {
           keyword: this.input3,
-          user: this.father,
+          user: this.username,
           page: val
         }
         this.loading = true
@@ -197,7 +199,6 @@ export default {
       console.log(item)
     },
     like: function (item) {
-      this.username = this.father
       console.log(this.username)
       console.log('我点了')
       // this.likeFlag = !this.likeFlag
@@ -211,7 +212,8 @@ export default {
         console.log(this.username)
         const prams = {
           id: item.essay.essayId,
-          user: this.username
+          user: this.username,
+          page: this.currentPage
         }
         collectComposition(prams).then(respone => {
           this.$message({
@@ -230,6 +232,11 @@ export default {
         })
         item.shouchang = true
       }
+    },
+    reloadData: function () {
+      this.compositionData = this.fatherArray
+      console.log('我正在触发数据更新事件')
+      // this.reload()
     }
   }
 }

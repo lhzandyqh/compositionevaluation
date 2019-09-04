@@ -41,7 +41,7 @@ export function intelligentMeasurement (parems) {
   return request({
     url: '/zihui/plat/autoscoring',
     method: 'post',
-    params: parems
+    data: parems
   })
 }
 

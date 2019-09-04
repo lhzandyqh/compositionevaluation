@@ -95,7 +95,9 @@ export default {
     },
     logout: function () {
       console.log('退出登录')
-      localStorage.setItem('username', null)
+      localStorage.clear()
+      // this.reload()
+      // this.$parent.judgeFlag()
     }
   }
   // mounted () {

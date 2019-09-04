@@ -3,14 +3,19 @@
     <el-container style="width: 100%">
       <el-header height="80px">
         <el-row>
-          <el-col :span="4" :offset="4">
+          <el-col :span="5">
+            <div class="pictureContainer">
+              <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+            </div>
+          </el-col>
+          <el-col :span="4" :offset="1">
             <div class="logo_container">
               <el-image
                 style="width: 162px; height: 42px"
                 :src=logo></el-image>
             </div>
           </el-col>
-          <el-col :span="2" :offset="12">
+          <el-col :span="2" :offset="10">
             <div class="tubiao-contianer">
               <div class="tubiao">
 <!--                <i class="el-icon-s-data"></i>-->
@@ -278,6 +283,9 @@ export default {
   .button_container{
     padding-top: 25px;
     text-align: center;
+  }
+  .pictureContainer{
+    padding-top: 10px;
   }
 
 </style>
