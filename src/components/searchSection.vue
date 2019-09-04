@@ -11,7 +11,7 @@
             <el-card class="box-card" style="width: 100%;height: 120px">
               <el-row>
                 <el-col :span="8">
-                  <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" style="width: 80px;height: 80px">
+                  <img src="http://114.242.223.253/zihui/images/20190703c001.jpg" class="image" style="width: 80px;height: 80px">
                 </el-col>
                 <el-col :span="16">
                   <el-row>

@@ -36,14 +36,14 @@
       <el-main>
         <div class="favoriteContainer">
           <div class="cardContaienr">
-            <el-card class="box-card" style="width: 80%;height: 600px">
+            <el-card class="box-card" style="width: 80%">
               <el-row>
                 <span style="font-weight: bolder">我的收藏</span>
               </el-row>
               <el-divider></el-divider>
               <el-row>
-                <div v-for="item in compositionData" :key="item.id" class="text item" v-loading="loading">
-                  <el-card style="width: 90%;height: 200px">
+                <div v-for="item in favoriteData" :key="item.id" class="text item" v-loading="loading">
+                  <el-card style="width: 100%;height: 200px" @click.native="gotoContent(item)">
                     <el-row>
                       <el-col :span="9">
                         <div class="picture-container">
@@ -120,19 +120,74 @@
 
 <script>
 import logo from '@/assets/image/logo.png'
+import {getFavoriteListData} from '@/api/getCompositionData'
 export default {
   name: 'compositionContent',
   data () {
     return {
+      username: localStorage.getItem('username'),
       dialogVisible: false,
+      total: 10,
       logo: logo,
       textarea1: '',
-      textarea2: ''
+      textarea2: '',
+      favoriteData: []
     }
   },
+  mounted () {
+    this.getFavoriteData()
+  },
   methods: {
-    startEvaluation: function () {
-      this.dialogVisible = true
+    getFavoriteData: function () {
+      const prams = {
+        user: this.username
+      }
+      getFavoriteListData(prams).then(respone => {
+        this.favoriteData = respone.data.data.collectList
+        this.total = this.favoriteData.length
+        if (this.total === 0) {
+          this.$message({
+            message: '未查询到相关收藏',
+            type: 'warning'
+          })
+        }
+        console.log(this.favoriteData)
+      })
+    },
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+      const prams = {
+        page: val,
+        user: this.username
+      }
+      getFavoriteListData(prams).then(respone => {
+        this.favoriteData = respone.data.data.collectList
+        this.total = this.favoriteData.length
+        if (this.total === 0) {
+          this.$message({
+            message: '未查询到相关收藏',
+            type: 'warning'
+          })
+        }
+        console.log('我喜欢的')
+        console.log(this.favoriteData)
+      })
+    },
+    gotoContent (item) {
+      // const {href} = this.$router.resolve({
+      //   path: '/compositionContent',
+      //   query: {
+      //     id: item.essayId
+      //   }
+      // })
+      // window.open(href, '_bank')
+      this.$router.push({
+        path: '/compositiondetails',
+        query: {
+          id: item.essayId
+        }
+      })
+      console.log(item)
     }
   }
 }
@@ -179,6 +234,20 @@ export default {
     padding-left: 15%;
   }
   .fenye{
+    text-align: center;
+  }
+  .biaoqian{
+    display: inline-block;
+  }
+  .composition_title{
+    display: inline-block;
+    margin-top: 10px;
+  }
+  .one_row{
+    display: inline-block;
+  }
+  .fenye{
+    padding-top: 20px;
     text-align: center;
   }
 

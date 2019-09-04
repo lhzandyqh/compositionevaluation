@@ -26,3 +26,30 @@ export function getResearchListData (parems) {
     params: parems
   })
 }
+
+// 获取我的收藏
+export function getFavoriteListData (parems) {
+  return request({
+    url: '/zihui/plat/mine',
+    method: 'get',
+    params: parems
+  })
+}
+
+// 智能测评
+export function intelligentMeasurement (parems) {
+  return request({
+    url: '/zihui/plat/autoscoring',
+    method: 'post',
+    params: parems
+  })
+}
+
+// 获得作文详情
+export function getContentData (parems) {
+  return request({
+    url: '/zihui/show',
+    method: 'get',
+    params: parems
+  })
+}

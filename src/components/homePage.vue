@@ -41,7 +41,7 @@
               <search-section style="padding-top: 20%"></search-section>
             </el-aside>
             <el-main >
-              <composition-list></composition-list>
+              <composition-list :father="username" :fatherArray="fatherData"></composition-list>
             </el-main>
           </el-container>
         </el-main>
@@ -82,6 +82,7 @@ import logo from '@/assets/image/logo.png'
 import searchSection from '@/components/searchSection'
 import compositionList from '@/components/compositionList'
 import userPopover from '@/components/user/userPopover'
+import {getCompositionListData} from '@/api/getCompositionData'
 export default {
   name: 'homePage',
   components: { searchSection, compositionList, userPopover },
@@ -93,17 +94,32 @@ export default {
       loginForm: {
         user_name: '',
         password: ''
-      }
+      },
+      username: '',
+      fatherData: []
     }
   },
   mounted () {
-    localStorage.setItem('username', 'null')
+    // localStorage.setItem('username', 'null')
+    // localStorage.setItem('username')
+    this.judgeFlag()
+    this.getData()
   },
   methods: {
     showLogin: function () {
       // this.loginFlag = '是'
       this.showDialog = true
       // alert('登录成功')
+    },
+    getData: function () {
+      const prams = {
+        page: 1
+      }
+      getCompositionListData(prams).then(respone => {
+        this.fatherData = respone.data.data
+        console.log('输出测试')
+        console.log(this.fatherData)
+      })
     },
     login: function () {
       // this.loginFlag = '是'
@@ -123,11 +139,29 @@ export default {
         this.loginFlag = '是'
         // alert('登录成功')
         this.showDialog = false
+        this.username = localStorage.getItem('username')
+        const prams = {
+          page: 1,
+          user: this.username
+        }
+        getCompositionListData(prams).then(respone => {
+          this.compositionData = respone.data.data
+          console.log('输出父组件测试')
+          console.log(this.compositionData)
+        })
       })
     },
     goCompositionContent: function () {
       let routeData = this.$router.resolve({ path: '/compositionContent' })
       window.open(routeData.href, '_blank')
+    },
+    judgeFlag: function () {
+      if (localStorage.getItem('username') === null) {
+        this.loginFlag = '否'
+      } else {
+        this.loginFlag = '是'
+      }
+      console.log('我调用完方法了')
     }
   }
 }

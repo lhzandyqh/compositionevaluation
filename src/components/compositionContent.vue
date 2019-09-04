@@ -70,18 +70,57 @@
               </el-row>
               <el-row>
                 <div class="button_container">
-                  <el-button type="primary" round @click="startEvaluation">点击进行智能评测</el-button>
+                  <el-button type="primary" round @click="beginMeasure">点击进行智能评测</el-button>
                 </div>
               </el-row>
             </el-card>
           </el-main>
           <el-aside width="30%">
             <div style="padding-top: 20px">
-              <el-card class="box-card"  shadow="never" style="height: 600px">
+              <el-card class="box-card"  shadow="never" >
                 <el-row>
                   <span style="font-weight: bolder">推荐模板</span>
                 </el-row>
                 <el-divider></el-divider>
+                <div v-if="tuijianFlag === false">
+                  <span style="font-size: 25px">暂无推荐</span>
+                </div>
+                <div v-else v-for="item in tuijianData" :key="item.id" class="text item" v-loading="loading">
+                  <el-card class="box-card" style="width: 100%;height: 120px">
+                    <el-row>
+                      <el-col :span="8">
+                        <img src="http://114.242.223.253/zihui/images/20190703c001.jpg" class="image" style="width: 80px;height: 80px">
+                      </el-col>
+                      <el-col :span="16">
+                        <el-row>
+                          <span>{{item.title}}</span>
+                        </el-row>
+                        <el-row>
+                          <el-col :span="12">
+                            <div class="one_row">
+                              <div class="biaoqian">
+                                <i class="el-icon-time"></i>
+                              </div>
+                              <div class="composition_title">
+                                <span style="font-size: 10px;font-weight: bolder">{{item.year}}</span>
+                              </div>
+                            </div>
+                          </el-col>
+                          <el-col :span="8">
+                            <div class="one_row">
+                              <div class="biaoqian">
+                                <i class="el-icon-view"></i>
+                              </div>
+                              <div class="composition_title">
+                                <span style="font-size: 10px;font-weight: bolder">201</span>
+                              </div>
+                            </div>
+                          </el-col>
+                        </el-row>
+                      </el-col>
+                    </el-row>
+                  </el-card>
+                </div>
               </el-card>
             </div>
           </el-aside>
@@ -104,7 +143,7 @@
             <span style="font-weight: bolder">我的得分: </span>
           </el-col>
           <el-col :span="8">
-            <span>81</span>
+            <span>{{dialogData[0]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 10px">
@@ -112,7 +151,7 @@
             <span style="font-weight: bolder">标签: </span>
           </el-col>
           <el-col :span="8">
-            <span>人生，谦虚，奋斗</span>
+            <span>{{dialogData[1]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 10px">
@@ -120,7 +159,7 @@
             <span style="font-weight: bolder">题材: </span>
           </el-col>
           <el-col :span="8">
-            <span>议论文</span>
+            <span>{{dialogData[2]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 10px">
@@ -128,13 +167,13 @@
           <span style="font-weight: bolder">引用次数: </span>
         </el-col>
           <el-col :span="8">
-            <span>0</span>
+            <span>{{dialogData[3]}}</span>
           </el-col>
           <el-col :span="4">
             <span style="font-weight: bolder">排比次数: </span>
           </el-col>
           <el-col :span="8">
-            <span>1</span>
+            <span>{{dialogData[4]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 10px">
@@ -142,7 +181,7 @@
             <span style="font-weight: bolder">建议: </span>
           </el-col>
           <el-col :span="20">
-            <span>不知道</span>
+            <span>{{dialogData[6]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 30px">
@@ -158,20 +197,48 @@
 </template>
 
 <script>
+import {intelligentMeasurement} from '@/api/getCompositionData'
 import logo from '@/assets/image/logo.png'
 export default {
   name: 'compositionContent',
   data () {
     return {
       dialogVisible: false,
+      username: localStorage.getItem('username'),
       logo: logo,
       textarea1: '',
-      textarea2: ''
+      textarea2: '',
+      measureData: [],
+      dialogData: [],
+      tuijianData: [],
+      tuijianFlag: false,
+      loading: false
     }
   },
   methods: {
     startEvaluation: function () {
       this.dialogVisible = true
+    },
+    beginMeasure: function () {
+      if (this.textarea1 === '' || this.textarea2 === '') {
+        this.$message.error('作文标题或作文内容不能为空')
+      } else {
+        const prames = {
+          title: this.textarea1,
+          passage: this.textarea2,
+          user: this.username
+        }
+        this.loading = true
+        intelligentMeasurement(prames).then(respone => {
+          this.measureData = respone.data.data
+          this.dialogData = this.measureData.tags
+          this.tuijianData = respone.data.data.passage
+          console.log(this.tuijianData)
+        })
+        this.tuijianFlag = true
+        this.dialogVisible = true
+        this.loading = false
+      }
     }
   }
 }

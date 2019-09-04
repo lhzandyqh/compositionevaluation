@@ -30,7 +30,7 @@
             <i class="el-icon-open"></i>
           </div>
           <div class="functionTitle">
-            <el-button type="text" >退出登录</el-button>
+            <el-button type="text" @click="logout">退出登录</el-button>
           </div>
         </div>
       </div>
@@ -92,6 +92,10 @@ export default {
     toFavorite: function () {
       let routeData = this.$router.resolve({ path: '/myfavorite' })
       window.open(routeData.href, '_blank')
+    },
+    logout: function () {
+      console.log('退出登录')
+      localStorage.setItem('username', null)
     }
   }
   // mounted () {

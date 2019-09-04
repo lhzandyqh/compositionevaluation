@@ -16,24 +16,32 @@
     </el-row>
     <el-divider></el-divider>
     <el-row>
-      <div v-for="item in compositionData" :key="item.id" class="text item" v-loading="loading">
-        <el-card style="width: 90%;height: 200px">
+      <div v-for="item in compositionData" :key="item.essay.id" class="text item" v-loading="loading">
+        <el-card style="width: 90%;height: 200px" @click.native="gotoContent(item)">
           <el-row>
             <el-col :span="9">
               <div class="picture-container">
-                <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" style="width: 300px;height: 160px">
+<!--                // https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png-->
+                <img src="http://114.242.223.253/zihui/images/20190703a002.jpg" class="image" style="width: 300px;height: 160px">
               </div>
             </el-col>
             <el-col :span="15">
               <el-row style="padding-top: 0px">
-                <el-col :span="24">
+                <el-col :span="22">
                   <div class="one_row">
                     <div class="biaoqian">
-                      <el-tag>{{item.ranking}}</el-tag>
+                      <el-tag>{{item.essay.ranking}}</el-tag>
                     </div>
                     <div class="composition_title">
-                      <span style="font-size: 22px">{{item.title}}</span>
+                      <span style="font-size: 22px">{{item.essay.title}}</span>
                     </div>
+                  </div>
+                </el-col>
+                <el-col :span="2">
+                  <div class="like">
+                    <i v-if="item.shouchang === false" class="el-icon-star-off" @click.stop="like(item)"></i>
+                    <i v-else class="el-icon-star-on"></i>
+<!--                    user: this.father-->
                   </div>
                 </el-col>
               </el-row>
@@ -44,7 +52,7 @@
                       <i class="el-icon-time"></i>
                     </div>
                     <div class="composition_title">
-                      <span style="font-size: 10px;font-weight: bolder">{{item.year}}</span>
+                      <span style="font-size: 10px;font-weight: bolder">{{item.essay.year}}</span>
                     </div>
                   </div>
                 </el-col>
@@ -60,7 +68,7 @@
                 </el-col>
               </el-row>
               <el-row style="padding-top: 10px">
-                <span>{{item.summary}}</span>
+                <span>{{item.essay.summary}}</span>
               </el-row>
             </el-col>
           </el-row>
@@ -84,8 +92,13 @@
 
 <script>
 import {getCompositionListData, getResearchListData} from '@/api/getCompositionData'
+import {collectComposition} from '@/api/collectOrLikeComposition'
 export default {
   name: 'compositionList',
+  props: {
+    father: String,
+    fatherArray: Array
+  },
   data () {
     return {
       compositionData: [],
@@ -93,13 +106,26 @@ export default {
       input3: '',
       total: 4000,
       researchFlag: false,
-      loading: false
+      loading: false,
+      likeFlag: false,
+      username: ''
+      // url: this.changePicture()
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
+    // changePicture: function (item) {
+    //   var num = (item.id) % 100
+    //   if (num < 10) {
+    //     num = '0' + num
+    //   } else {
+    //     num = '' + num
+    //   }
+    //   var str = 'http://114.242.223.253/zihui/images/20190703a0' + num + '.jpg'
+    //   return str
+    // },
     research: function () {
       this.researchFlag = true
       const prams = {
@@ -108,7 +134,7 @@ export default {
       }
       this.loading = true
       getResearchListData(prams).then(respone => {
-        this.compositionData = respone.data.data.essays
+        this.compositionData = respone.data.essays
         this.total = respone.data.data.count
         if (this.total === 0) {
           this.$message({
@@ -126,13 +152,16 @@ export default {
       }
       getCompositionListData(prams).then(respone => {
         this.compositionData = respone.data.data
+        console.log('输出测试')
+        console.log(this.compositionData)
       })
     },
     handleCurrentChange (val) {
       if (this.researchFlag === false) {
         console.log(`当前页: ${val}`)
         const prams = {
-          page: val
+          page: val,
+          user: this.father
         }
         getCompositionListData(prams).then(respone => {
           this.compositionData = respone.data.data
@@ -141,6 +170,7 @@ export default {
         console.log(`当前页: ${val}`)
         const prams = {
           keyword: this.input3,
+          user: this.father,
           page: val
         }
         this.loading = true
@@ -148,6 +178,57 @@ export default {
           this.compositionData = respone.data.data.essays
           this.loading = false
         })
+      }
+    },
+    gotoContent (item) {
+      // const {href} = this.$router.resolve({
+      //   path: '/compositionContent',
+      //   query: {
+      //     id: item.essayId
+      //   }
+      // })
+      // window.open(href, '_bank')
+      this.$router.push({
+        path: '/compositiondetails',
+        query: {
+          id: item.essay.essayId
+        }
+      })
+      console.log(item)
+    },
+    like: function (item) {
+      this.username = this.father
+      console.log(this.username)
+      console.log('我点了')
+      // this.likeFlag = !this.likeFlag
+      if (this.username === '') {
+        this.$message({
+          message: '未登录，无法收藏，请登录后再试',
+          type: 'warning'
+        })
+      } else {
+        console.log('用户名')
+        console.log(this.username)
+        const prams = {
+          id: item.essay.essayId,
+          user: this.username
+        }
+        collectComposition(prams).then(respone => {
+          this.$message({
+            message: '收藏成功',
+            type: 'success'
+          })
+          // const prams = {
+          //   page: 1,
+          //   user: this.father
+          // }
+          // getCompositionListData(prams).then(respone => {
+          //   this.compositionData = respone.data.data
+          //   console.log('输出收藏后的展示数据')
+          //   console.log(this.compositionData)
+          // })
+        })
+        item.shouchang = true
       }
     }
   }
