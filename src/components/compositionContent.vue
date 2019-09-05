@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="5">
             <div class="pictureContainer">
-              <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+              <img src="http://114.242.223.253/zihui/images/mynewlogo.png" style="width:100%;height: 60px">
             </div>
           </el-col>
           <el-col :span="4" :offset="1">
@@ -91,7 +91,7 @@
                   <span style="font-size: 25px">暂无推荐</span>
                 </div>
                 <div v-else v-for="item in tuijianData" :key="item.id" class="text item" v-loading="loading">
-                  <el-card class="box-card" style="width: 100%;height: 120px">
+                  <el-card class="box-card" style="width: 100%;height: 120px" @click.native="gotoContent(item)">
                     <el-row>
                       <el-col :span="8">
                         <img src="http://114.242.223.253/zihui/images/20190703c001.jpg" class="image" style="width: 80px;height: 80px">
@@ -111,7 +111,7 @@
                               </div>
                             </div>
                           </el-col>
-                          <el-col :span="8">
+                          <el-col :span="12">
                             <div class="one_row">
                               <div class="biaoqian">
                                 <i class="el-icon-view"></i>
@@ -148,7 +148,7 @@
             <span style="font-weight: bolder">我的得分: </span>
           </el-col>
           <el-col :span="8">
-            <span>{{dialogData[0]}}</span>
+            <span>{{dialogData[5]}}</span>
           </el-col>
         </el-row>
         <el-row style="padding-top: 10px">
@@ -244,6 +244,22 @@ export default {
         this.dialogVisible = true
         this.loading = false
       }
+    },
+    gotoContent (item) {
+      // const {href} = this.$router.resolve({
+      //   path: '/compositionContent',
+      //   query: {
+      //     id: item.essayId
+      //   }
+      // })
+      // window.open(href, '_bank')
+      this.$router.push({
+        path: '/compositiondetails',
+        query: {
+          id: item.essayId
+        }
+      })
+      console.log(item)
     }
   }
 }
@@ -286,6 +302,15 @@ export default {
   }
   .pictureContainer{
     padding-top: 10px;
+  }
+   .one_row{
+    display: inline-block;
+  }
+  .composition_title{
+    display: inline-block;
+  }
+  .biaoqian{
+    display: inline-block;
   }
 
 </style>

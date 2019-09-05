@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="5">
             <div class="pictureContainer">
-              <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+              <img src="http://114.242.223.253/zihui/images/mynewlogo.png" style="width:100%;height: 60px">
             </div>
           </el-col>
           <el-col :span="4" :offset="1">
@@ -52,7 +52,7 @@
                     <el-row>
                       <el-col :span="9">
                         <div class="picture-container">
-                          <img src="http://114.242.223.253/zihui/images/20190703a002.jpg" class="image" style="width: 300px;height: 160px">
+                          <img :src=changePicture(item) class="image" style="width: 300px;height: 160px">
                         </div>
                       </el-col>
                       <el-col :span="15">
@@ -143,6 +143,16 @@ export default {
     this.getFavoriteData()
   },
   methods: {
+    changePicture: function (item) {
+      var num = (item.id) % 100
+      if (num < 10) {
+        num = '0' + num
+      } else {
+        num = '' + num
+      }
+      var str = 'http://114.242.223.253/zihui/images/20190703a0' + num + '.jpg'
+      return str
+    },
     getFavoriteData: function () {
       const prams = {
         user: this.username

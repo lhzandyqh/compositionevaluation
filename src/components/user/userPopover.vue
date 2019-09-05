@@ -78,6 +78,7 @@
 <script>
 export default {
   name: 'userPopover',
+  inject: ['reload'],
   data () {
     return {
       confirmpassword: '',
@@ -96,7 +97,12 @@ export default {
     logout: function () {
       console.log('退出登录')
       localStorage.clear()
-      // this.reload()
+      this.$message({
+        message: '退出登录',
+        type: 'success',
+        duration: 5000
+      })
+      this.reload()
       // this.$parent.judgeFlag()
     }
   }

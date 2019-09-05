@@ -39,7 +39,7 @@ export function getFavoriteListData (parems) {
 // 智能测评
 export function intelligentMeasurement (parems) {
   return request({
-    url: '/zihui/plat/autoscoring',
+    url: '/zihui/plat/autoscoring2',
     method: 'post',
     data: parems
   })

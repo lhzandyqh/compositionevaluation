@@ -6,7 +6,7 @@
           <el-row>
             <el-col :span="5">
               <div class="pictureContainer">
-                <img src="../assets/image/mynewlogo.png" style="width:100%;height: 60px">
+                <img src="http://114.242.223.253/zihui/images/mynewlogo.png" style="width:100%;height: 60px">
               </div>
             </el-col>
             <el-col :span="4" :offset="1">
@@ -73,6 +73,7 @@
               v-model="loginForm.password"
               placeholder="密码"
               name="password"
+              show-password
               auto-complete="on"/>
           </el-form-item>
           <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="login">登录</el-button>
@@ -104,6 +105,7 @@ export default {
       fatherData: []
     }
   },
+  inject: ['reload'],
   mounted () {
     // localStorage.setItem('username', 'null')
     // localStorage.setItem('username')
@@ -155,6 +157,7 @@ export default {
           console.log('输出要传给子组件显示的作文数据')
           console.log(this.fatherData)
           this.$refs.child.handleCurrentChange(1)
+          this.reload()
         })
       })
     },

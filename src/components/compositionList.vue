@@ -17,15 +17,15 @@
     <el-divider></el-divider>
     <el-row>
       <div v-for="item in compositionData" :key="item.essay.id" class="text item" v-loading="loading">
-        <el-card style="width: 90%;height: 200px" @click.native="gotoContent(item)">
+        <el-card style="width: 100%;height: 200px" @click.native="gotoContent(item)">
           <el-row>
-            <el-col :span="9">
+            <el-col :span="10">
               <div class="picture-container">
 <!--                // https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png-->
                 <img :src=changePicture(item.essay) class="image" style="width: 300px;height: 160px">
               </div>
             </el-col>
-            <el-col :span="15">
+            <el-col :span="14">
               <el-row style="padding-top: 0px">
                 <el-col :span="22">
                   <div class="one_row">
@@ -131,6 +131,7 @@ export default {
       this.researchFlag = true
       const prams = {
         keyword: this.input3,
+        user: this.username,
         page: 1
       }
       this.loading = true
@@ -202,7 +203,7 @@ export default {
       console.log(this.username)
       console.log('我点了')
       // this.likeFlag = !this.likeFlag
-      if (this.username === '') {
+      if (this.username === '' || this.username === undefined) {
         this.$message({
           message: '未登录，无法收藏，请登录后再试',
           type: 'warning'

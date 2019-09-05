@@ -8,12 +8,12 @@
             <el-button style="float: right; padding: 3px 0" type="text" @click="changeList">换一批</el-button>
           </div>
           <div v-for="item in recommandData" :key="item.id" class="text item">
-            <el-card class="box-card" style="width: 100%;height: 120px">
+            <el-card class="box-card" style="width: 100%;height: 120px" @click.native="gotoContent(item)">
               <el-row>
-                <el-col :span="8">
-                  <img src="http://114.242.223.253/zihui/images/20190703c001.jpg" class="image" style="width: 80px;height: 80px">
+                <el-col :span="10">
+                  <img :src=changePicture(item) class="image" style="width: 80px;height: 80px">
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="14">
                   <el-row>
                     <span>{{item.title}}</span>
                   </el-row>
@@ -63,6 +63,25 @@ export default {
     this.getMyData()
   },
   methods: {
+    gotoContent: function (item) {
+      this.$router.push({
+        path: '/compositiondetails',
+        query: {
+          id: item.essayId
+        }
+      })
+      console.log(item)
+    },
+    changePicture: function (item) {
+      var num = (item.id) % 100
+      if (num < 10) {
+        num = '0' + num
+      } else {
+        num = '' + num
+      }
+      var str = 'http://114.242.223.253/zihui/images/20190703a0' + num + '.jpg'
+      return str
+    },
     getMyData: function () {
       const prams = {
         user: '1234'
