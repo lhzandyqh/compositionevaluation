@@ -67,7 +67,7 @@ export default {
       this.$router.push({
         path: '/compositiondetails',
         query: {
-          id: item.essayId
+          id: item.id
         }
       })
       console.log(item)
@@ -87,7 +87,7 @@ export default {
         user: '1234'
       }
       getRecommandListData(prams).then(respone => {
-        this.recommandData = respone.data.data
+        this.recommandData = respone.data.data.list
         console.log(this.recommandData)
       })
     },
@@ -96,7 +96,7 @@ export default {
         user: '1234'
       }
       getRecommandListData(prams).then(respone => {
-        this.recommandData = respone.data.data
+        this.recommandData = respone.data.data.list
       })
     }
   }

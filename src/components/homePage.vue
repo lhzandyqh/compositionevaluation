@@ -33,6 +33,7 @@
                 </div>
                 <div class="title">
                   <span v-if="loginFlag==='否'" style="color: dimgrey;cursor: pointer" @click="showLogin">登录</span>
+                  <span v-if="loginFlag==='否'" style="color: dimgrey;cursor: pointer" @click="beginRegistered">注册</span>
 <!--                  <span v-else style="color: dimgrey">我的</span>-->
                   <user-popover v-else></user-popover>
                 </div>
@@ -79,11 +80,54 @@
           <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="login">登录</el-button>
         </el-form>
       </el-dialog>
+      <el-dialog  :visible.sync="showDialogTwo" width="30%">
+        <el-form  :model="loginForm" class="login-form" auto-complete="on" label-position="left">
+          <el-form-item>
+            <el-input
+              v-model="registerForm.user_name"
+              placeholder="请输入用户名"
+              name="user_name"
+              type="text"
+              auto-complete="on"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="registerForm.school_name"
+              placeholder="请输入学校名称"
+              name="user_name"
+              type="text"
+              auto-complete="on"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="gradeValue" placeholder="请选择年级" @change="showGrade">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="registerForm.password"
+              placeholder="请输入密码"
+              name="password"
+              show-password
+              auto-complete="on"/>
+          </el-form-item>
+          <el-button type="primary" style="width:100%;margin-bottom:30px;" @click="register">注册</el-button>
+        </el-form>
+      </el-dialog>
     </div>
 </template>
 
 <script>
 import {login} from '@/api/login'
+import {register} from '@/api/register'
 import logo from '@/assets/image/logo.png'
 import searchSection from '@/components/searchSection'
 import compositionList from '@/components/compositionList'
@@ -94,12 +138,38 @@ export default {
   components: { searchSection, compositionList, userPopover },
   data () {
     return {
+      gradeValue: '',
+      options: [{
+        value: 'chuyi',
+        label: '初一'
+      }, {
+        value: 'chuer',
+        label: '初二'
+      }, {
+        value: 'chusan',
+        label: '初三'
+      }, {
+        value: 'gaoyi',
+        label: '高一'
+      }, {
+        value: 'gaoer',
+        label: '高二'
+      }, {
+        value: 'gaosan',
+        label: '高三'
+      }],
       logo: logo,
+      showDialogTwo: false,
       showDialog: false,
       loginFlag: '否',
       loginForm: {
         user_name: '',
         password: ''
+      },
+      registerForm: {
+        user_name: '',
+        password: '',
+        school_name: ''
       },
       username: localStorage.username,
       fatherData: []
@@ -113,18 +183,51 @@ export default {
     this.getData()
   },
   methods: {
+    showGrade: function () {
+      console.log('我变了')
+      console.log(this.gradeValue)
+    },
     showLogin: function () {
       // this.loginFlag = '是'
       this.showDialog = true
       // alert('登录成功')
+    },
+    beginRegistered: function () {
+      console.log('开始注册')
+      this.showDialogTwo = true
+    },
+    register: function () {
+      if (this.registerForm.user_name === '' || this.registerForm.password === '') {
+        this.$message({
+          message: '密码或用户名不能为空',
+          type: 'warning'
+        })
+      } else {
+        // console.log('注册成功')
+        const prams = {
+          name: this.registerForm.user_name,
+          password: this.registerForm.password,
+          schoolname: this.registerForm.school_name,
+          nianji: this.gradeValue
+        }
+        register(prams).then(response => {
+          console.log('测试注册数据')
+          console.log(response.data)
+          this.$message({
+            message: '恭喜你，注册成功 请登录',
+            type: 'success'
+          })
+        })
+        this.showDialogTwo = false
+      }
     },
     getData: function () {
       const prams = {
         page: 1
       }
       getCompositionListData(prams).then(respone => {
-        this.fatherData = respone.data.data
-        console.log('输出测试')
+        this.fatherData = respone.data.data.list
+        console.log('输出测试111')
         console.log(this.fatherData)
       })
     },

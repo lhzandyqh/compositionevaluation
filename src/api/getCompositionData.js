@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取作文列表里面的数据
 export function getCompositionListData (parems) {
   return request({
-    url: '/zihui/AllEssays',
+    url: '/zihui/essay/findAll',
     method: 'get',
     params: parems
   })
@@ -21,7 +21,7 @@ export function getRecommandListData (parems) {
 // 搜索关键字获取相关作文数据
 export function getResearchListData (parems) {
   return request({
-    url: '/zihui/plat/searchwithWord',
+    url: '/zihui/essay/serchEssay',
     method: 'get',
     params: parems
   })
@@ -48,7 +48,25 @@ export function intelligentMeasurement (parems) {
 // 获得作文详情
 export function getContentData (parems) {
   return request({
-    url: '/zihui/show',
+    url: '/zihui/essay/findEssayById',
+    method: 'get',
+    params: parems
+  })
+}
+
+// 获取作文分类
+export function getCompositionType (parems) {
+  return request({
+    url: '/zihui/essay/getType',
+    method: 'get',
+    params: parems
+  })
+}
+
+// 根据作文类别获取作文内容
+export function getCompositionDataByType (parems) {
+  return request({
+    url: '/zihui/essay/findType',
     method: 'get',
     params: parems
   })

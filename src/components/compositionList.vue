@@ -15,64 +15,73 @@
       </el-col>
     </el-row>
     <el-divider></el-divider>
+    <div class="tagContainer">
+      <div class="small_tag">
+        <el-tag style="margin-left: 2%;margin-top: 2%;cursor:pointer;" v-for="(item, i) in compositionType " :key="i" @click="compositionByType(item)"> {{item}}</el-tag>
+      </div>
+<!--      <span v-for="(item, i) in compositionType " :key="i">{{item}}</span>-->
+    </div>
+    <el-divider></el-divider>
     <el-row>
-      <div v-for="item in compositionData" :key="item.essay.id" class="text item" v-loading="loading">
-        <el-card style="width: 100%;height: 200px" @click.native="gotoContent(item)">
-          <el-row>
-            <el-col :span="10">
-              <div class="picture-container">
-<!--                // https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png-->
-                <img :src=changePicture(item.essay) class="image" style="width: 300px;height: 160px">
-              </div>
-            </el-col>
-            <el-col :span="14">
-              <el-row style="padding-top: 0px">
-                <el-col :span="22">
-                  <div class="one_row">
-                    <div class="biaoqian">
-                      <el-tag>{{item.essay.ranking}}</el-tag>
+      <div v-if="compositionData">
+        <div v-for="(item, index) in compositionData" :key="index"  v-loading="loading">
+          <el-card style="width: 100%;height: 200px" @click.native="gotoContent(item)">
+            <el-row>
+              <el-col :span="10">
+                <div class="picture-container">
+                  <!--                // https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png-->
+                  <img :src=changePicture(item) class="image" style="width: 300px;height: 160px">
+                </div>
+              </el-col>
+              <el-col :span="14">
+                <el-row style="padding-top: 0px">
+                  <el-col :span="22">
+                    <div class="one_row">
+                      <div class="biaoqian">
+                        <el-tag>{{item.type}}</el-tag>
+                      </div>
+                      <div class="composition_title">
+                        <span style="font-size: 22px">{{item.title}}</span>
+                      </div>
                     </div>
-                    <div class="composition_title">
-                      <span style="font-size: 22px">{{item.essay.title}}</span>
+                  </el-col>
+                  <el-col :span="2">
+                    <div class="like">
+                      <i v-if="item.shouchang === false" class="el-icon-star-off" @click.stop="like(item)"></i>
+                      <i v-else class="el-icon-star-on"></i>
+                      <!--                    user: this.father-->
                     </div>
-                  </div>
-                </el-col>
-                <el-col :span="2">
-                  <div class="like">
-                    <i v-if="item.shouchang === false" class="el-icon-star-off" @click.stop="like(item)"></i>
-                    <i v-else class="el-icon-star-on"></i>
-<!--                    user: this.father-->
-                  </div>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="4">
-                  <div class="one_row">
-                    <div class="biaoqian">
-                      <i class="el-icon-time"></i>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <div class="one_row">
+                      <div class="biaoqian">
+                        <i class="el-icon-time"></i>
+                      </div>
+                      <div class="composition_title">
+                        <span style="font-size: 10px;font-weight: bolder">{{item.date}}</span>
+                      </div>
                     </div>
-                    <div class="composition_title">
-                      <span style="font-size: 10px;font-weight: bolder">{{item.essay.year}}</span>
+                  </el-col>
+                  <el-col :span="8">
+                    <div class="one_row">
+                      <div class="biaoqian">
+                        <i class="el-icon-view"></i>
+                      </div>
+                      <div class="composition_title">
+                        <span style="font-size: 10px;font-weight: bolder">{{item.count}}</span>
+                      </div>
                     </div>
-                  </div>
-                </el-col>
-                <el-col :span="8">
-                  <div class="one_row">
-                    <div class="biaoqian">
-                      <i class="el-icon-view"></i>
-                    </div>
-                    <div class="composition_title">
-                      <span style="font-size: 10px;font-weight: bolder">2019-10-08</span>
-                    </div>
-                  </div>
-                </el-col>
-              </el-row>
-              <el-row style="padding-top: 10px">
-                <span>{{item.essay.summary}}</span>
-              </el-row>
-            </el-col>
-          </el-row>
-        </el-card>
+                  </el-col>
+                </el-row>
+                <el-row style="padding-top: 10px">
+                  <span>{{item.summary}}</span>
+                </el-row>
+              </el-col>
+            </el-row>
+          </el-card>
+        </div>
       </div>
     </el-row>
     <el-row>
@@ -80,7 +89,7 @@
         <el-pagination
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5]"
+          :page-sizes="[10]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
           :total=total>
@@ -91,7 +100,7 @@
 </template>
 
 <script>
-import {getCompositionListData, getResearchListData} from '@/api/getCompositionData'
+import {getCompositionListData, getResearchListData, getCompositionType, getCompositionDataByType} from '@/api/getCompositionData'
 import {collectComposition} from '@/api/collectOrLikeComposition'
 export default {
   name: 'compositionList',
@@ -103,6 +112,7 @@ export default {
   data () {
     return {
       compositionData: [],
+      compositionType: [],
       currentPage: 1,
       input3: '',
       total: 4437,
@@ -113,10 +123,31 @@ export default {
       // url: this.changePicture()
     }
   },
-  mounted () {
+  created () {
     this.getData()
+    this.getCompositionType()
   },
   methods: {
+    compositionByType: function (item) {
+      console.log(item)
+      const prams = {
+        type1: item
+      }
+      getCompositionDataByType(prams).then(response => {
+        console.log('测试按照类型获取作文数据')
+        console.log(response.data)
+        this.compositionData = response.data.data.list
+        this.total = response.data.data.total
+      })
+    },
+    getCompositionType: function () {
+      getCompositionType().then(response => {
+        console.log('测试作文类型')
+        console.log(response.data)
+        this.compositionType = response.data.data.list
+        console.log(response.data.data.list)
+      })
+    },
     changePicture: function (item) {
       var num = (item.id) % 100
       if (num < 10) {
@@ -130,14 +161,15 @@ export default {
     research: function () {
       this.researchFlag = true
       const prams = {
-        keyword: this.input3,
-        user: this.username,
+        query: this.input3,
         page: 1
       }
       this.loading = true
       getResearchListData(prams).then(respone => {
-        this.compositionData = respone.data.data.essays
-        this.total = respone.data.data.count
+        console.log('测试搜索')
+        console.log(respone.data)
+        this.compositionData = respone.data.data.list
+        this.total = respone.data.data.total
         if (this.total === 0) {
           this.$message({
             message: '未查询到相关文章',
@@ -154,9 +186,10 @@ export default {
         user: this.username
       }
       getCompositionListData(prams).then(respone => {
-        this.compositionData = respone.data.data
-        console.log('输出测试')
+        this.compositionData = respone.data.data.list
+        console.log('输出首页展示作文测试')
         console.log(this.compositionData)
+        this.total = respone.data.data.total
       })
     },
     handleCurrentChange (val) {
@@ -167,18 +200,17 @@ export default {
           user: this.username
         }
         getCompositionListData(prams).then(respone => {
-          this.compositionData = respone.data.data
+          this.compositionData = respone.data.data.list
         })
       } else {
         console.log(`当前页: ${val}`)
         const prams = {
-          keyword: this.input3,
-          user: this.username,
+          query: this.input3,
           page: val
         }
         this.loading = true
         getResearchListData(prams).then(respone => {
-          this.compositionData = respone.data.data.essays
+          this.compositionData = respone.data.data.list
           this.loading = false
         })
       }
@@ -194,7 +226,7 @@ export default {
       this.$router.push({
         path: '/compositiondetails',
         query: {
-          id: item.essay.essayId
+          id: item.id
         }
       })
       console.log(item)
@@ -257,5 +289,11 @@ export default {
   .fenye{
     padding-top: 20px;
     text-align: center;
+  }
+  .tagContainer{
+    display: inline-block;
+    padding-left: 10px;
+  }
+  .small_tag{
   }
 </style>
